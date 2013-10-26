@@ -40,14 +40,16 @@ define (function (require, exports, module) {
 //    }
     
     function rubyLinter() {
-//        var spawn = require('child_process').spawn,
-//            ls  = spawn('ls', ['-l']);
-//        ls.stdout.on('data', function (data) {
-//            return data;
-//        });
-        return null;
+        require(['child_process'], function (child_process) {
+            var spawn = child_process.spawn,
+                ls = spawn("ls", ["-l"]);
+            
+            ls.stdout.on("data", function(data) {
+                return data;
+            });
+        });
     }
-
+    
     AppInit.appReady(function () {
         CodeInspection.register("ruby", {
             name: "Rubocop",
