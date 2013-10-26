@@ -1,0 +1,12 @@
+{
+    "name": "smockle.rubocop",
+    "title": "Rubocop",
+    "description": "Adds Rubocop support to Brackets.",
+    "homepage": "https://github.com/smockle/brackets-rubocop",
+    "version": "0.1.0",
+    "author": "Clay Miller <clay@smockle.com> (http://www.smockle.com)",
+    "license": "MIT",
+    "engines": {
+        "brackets": ">=0.24.0"
+    }
+}
