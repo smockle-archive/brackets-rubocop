@@ -7,35 +7,45 @@ define (function (require, exports, module) {
     var AppInit = brackets.getModule("utils/AppInit"),
         CodeInspection = brackets.getModule("language/CodeInspection");
     
-    require ("csslint/csslint");
+//    require ("csslint/csslint");
+//    
+//    function rubyLinter(text, fullPath) {
+//        var results;
+//        
+//        results = CSSLint.verify(text);
+//        
+//        if (results.messages.length) {
+//            var result = { errors: [] };
+//            
+//            for (var i = 0, len = results.messages.length; i < len; i++) {
+//                var messageOb = results.messages[i];
+//                
+//                // default
+//                var type = CodeInspection.Type.WARNING;
+//                
+//                if (messageOb.type === "error") {
+//                    type = CodeInspection.Type.ERROR;
+//                } else if(messageOb.type === "warning") {
+//                    type = CodeInspection.Type.WARNING;
+//                }
+//                
+//                result.errors.push({ pos: { line:messageOb.line-1, ch:messageOb.col }, message:messageOb.message, type:type });
+//            }
+//            return result;
+//        }
+//        else {
+//            // no errors
+//            return null;
+//        }
+//    }
     
-    function cssLinter(text, fullPath) {
-        var results;
-        
-        results = CSSLint.verify(text);
-        
-        if (results.messages.length) {
-            var result = { errors: [] };
-            
-            for (var i = 0, len = results.messages.length; i < len; i++) {
-                var messageOb = results.messages[i];
-                
-                // default
-                var type = CodeInspection.Type.WARNING;
-                
-                if (messageOb.type === "error") {
-                    type = CodeInspection.Type.ERROR;
-                } else if(messageOb.type === "warning") {
-                    type = CodeInspection.Type.WARNING;
-                }
-                result.errors.push({pos: {line:messageOb.line-1, ch:messageOb.col}, message:messageOb.message, type:type });
-            }
-            return result;
-        }
-        else {
-            // no errors
-            return null;
-        }
+    function rubyLinter() {
+        var spawn = require('child_process').spawn,
+            ls  = spawn('ls', ['-l']);
+        ls.stdout.on('data', function (data) {
+            return data;
+        });
     }
-    AppInit.appReady(function () { CodeInspection.register("css", { name: "CSSLint", scanFile: cssLinter });});
+
+    AppInit.appReady(function () { CodeInspection.register("rb", { name: "Rubocop", scanFile: rubyLinter });});
 });
