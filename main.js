@@ -48,5 +48,10 @@ define (function (require, exports, module) {
         return null;
     }
 
-    AppInit.appReady(function () { CodeInspection.register("rb", { name: "Rubocop", scanFile: rubyLinter });});
+    AppInit.appReady(function () {
+        CodeInspection.register("ruby", {
+            name: "Rubocop",
+            scanFile: rubyLinter
+        });
+    });
 });
