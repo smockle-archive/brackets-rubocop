@@ -1,59 +1,75 @@
-/*jslint vars: true, plusplus: true, devel: true, nomen: true, indent: 4, maxerr: 50 */
-/*global define, brackets, $, window, CSSLint, Mustache */
+/*jslint vars: true, plusplus: true, devel: true, nomen: true, indent: 4,
+maxerr: 50, browser: true */
+/*global $, define, brackets */
 
 define (function (require, exports, module) {
     "use strict";
     
     var AppInit = brackets.getModule("utils/AppInit"),
-        CodeInspection = brackets.getModule("language/CodeInspection");
+        CodeInspection = brackets.getModule("language/CodeInspection"),
+        ProjectManager = brackets.getModule("project/ProjectManager"),
+        ExtensionUtils = brackets.getModule("utils/ExtensionUtils"),
+        NodeConnection = brackets.getModule("utils/NodeConnection");
     
-//    require ("csslint/csslint");
-//    
-//    function rubyLinter(text, fullPath) {
-//        var results;
-//        
-//        results = CSSLint.verify(text);
-//        
-//        if (results.messages.length) {
-//            var result = { errors: [] };
-//            
-//            for (var i = 0, len = results.messages.length; i < len; i++) {
-//                var messageOb = results.messages[i];
-//                
-//                // default
-//                var type = CodeInspection.Type.WARNING;
-//                
-//                if (messageOb.type === "error") {
-//                    type = CodeInspection.Type.ERROR;
-//                } else if(messageOb.type === "warning") {
-//                    type = CodeInspection.Type.WARNING;
-//                }
-//                
-//                result.errors.push({ pos: { line:messageOb.line-1, ch:messageOb.col }, message:messageOb.message, type:type });
-//            }
-//            return result;
-//        }
-//        else {
-//            // no errors
-//            return null;
-//        }
-//    }
-    
-    function rubyLinter() {
-        require(['child_process'], function (child_process) {
-            var spawn = child_process.spawn,
-                ls = spawn("ls", ["-l"]);
-            
-            ls.stdout.on("data", function(data) {
-                return data;
+    // Helper function that chains a series of promise-returning
+    // functions together via their done callbacks.
+    function chain() {
+        var functions = Array.prototype.slice.call(arguments, 0);
+        if (functions.length > 0) {
+            var firstFunction = functions.shift();
+            var firstPromise = firstFunction.call();
+            firstPromise.done(function () {
+                chain.apply(null, functions);
             });
-        });
+        }
     }
-    
+  
     AppInit.appReady(function () {
+        // Create a new node connection. Requires the following extension:
+        // https://github.com/joelrbrandt/brackets-node-client
+        var nodeConnection = new NodeConnection();
+
+        // Every step of communicating with node is asynchronous, and is
+        // handled through jQuery promises. To make things simple, we
+        // construct a series of helper functions and then chain their
+        // done handlers together. Each helper function registers a fail
+        // handler with its promise to report any errors along the way.
+        
+        // Helper function to connect to node
+        function connect() {
+            var connectionPromise = nodeConnection.connect(true);
+            connectionPromise.fail(function () {
+                console.error("[brackets-rubocop] failed to connect to node");
+            });
+            return connectionPromise;
+        }
+        
+        // Helper function that loads our domain into the node server
+        function loadSimpleDomain() {
+            var path = ExtensionUtils.getModulePath(module, "node/SimpleDomain");
+            var loadPromise = nodeConnection.loadDomains([path], true);
+            loadPromise.fail(function () {
+                console.log("[brackets-rubocop] failed to load domain");
+            });
+            return loadPromise;
+        }
+        
+        // Helper function that runs the simple.getMemory command and
+        // logs the result to the console
+        function lint() {
+            var memoryPromise = nodeConnection.domains.rubocop.lint();
+            memoryPromise.fail(function (err) {
+                console.error("[brackets-rubocop] failed to run rubocop.lint", err);
+            });
+            memoryPromise.done(function () {
+                console.log("[brackets-rubocop] Success");
+            });
+            return memoryPromise;
+        }
+      
         CodeInspection.register("ruby", {
             name: "Rubocop",
-            scanFile: rubyLinter
+            scanFile: chain(connect, loadSimpleDomain, lint)
         });
     });
 });
