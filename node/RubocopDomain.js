@@ -19,23 +19,23 @@ maxerr: 50, node: true */
         var proc,
             command = "rubocop",
             error = "",
-            output = "";
+            output = "foo";
       
-        proc = spawn(command, ['--help']);
-        
-        proc.stdout.on("data", function (data) {
-            output += data;
-        });
-        
-        // append errors to output instead, so that we get all of the content back in
-        // the output field in the UI.  We don't really need to distinguish.
-        proc.stderr.on("data", function (err) {
-            output += err;
-        });
-        
-        proc.on("close", function (code) {
-            output += "\n" + command + " completed with exit code " + code;
-        });
+//        proc = spawn(command, ['--help']);
+//        
+//        proc.stdout.on("data", function (data) {
+//            output += data;
+//        });
+//        
+//        // append errors to output instead, so that we get all of the content back in
+//        // the output field in the UI.  We don't really need to distinguish.
+//        proc.stderr.on("data", function (err) {
+//            output += err;
+//        });
+//        
+//        proc.on("close", function (code) {
+//            output += "\n" + command + " completed with exit code " + code;
+//        });
         
         return output;
     }
