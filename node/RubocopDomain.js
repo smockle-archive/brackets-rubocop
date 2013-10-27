@@ -19,13 +19,13 @@ maxerr: 50, node: true */
         var proc,
             command = "rubocop",
             error = "",
-            output = "foo";
+            output = "";
       
-        proc = spawn("rubocop", ['-h']);
-//        
-//        proc.stdout.on("data", function (data) {
-//            output += data;
-//        });
+        proc = spawn("ls", ['-a']);
+        
+        proc.stdout.on("data", function (data) {
+            output += data;
+        });
 //        
 //        // append errors to output instead, so that we get all of the content back in
 //        // the output field in the UI.  We don't really need to distinguish.
