@@ -5,18 +5,37 @@ maxerr: 50, node: true */
 (function () {
     "use strict";
     
-    var os = require("os");
+    var childProcess = require("child_process"),
+        spawn = childProcess.spawn;
     
     var DOMAIN = "rubocop";
     
     /**
      * @private
-     * Handler function for the simple.getMemory command.
-     * @return {{total: number, free: number}} The total and free amount of
-     *   memory on the user's system, in bytes.
+     * Handler function for the rubocop.lint command.
+     * @return
      */
     function lint() {
-        return {total: os.totalmem(), free: os.freemem()};
+        var proc,
+            command = "rubocop",
+            error = "",
+            output = "";
+      
+        proc = spawn(command, ['--help']);
+        
+        proc.stdout.on("data", function (data) {
+            output += data;
+        });
+        
+        // append errors to output instead, so that we get all of the content back in
+        // the output field in the UI.  We don't really need to distinguish.
+        proc.stderr.on("data", function (err) {
+            output += err;
+        });
+        
+        proc.on("close", function (code) {
+            output += "\n" + command + " completed with exit code " + code;
+        });
     }
     
     /**
