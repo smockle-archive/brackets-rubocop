@@ -36,6 +36,8 @@ maxerr: 50, node: true */
         proc.on("close", function (code) {
             output += "\n" + command + " completed with exit code " + code;
         });
+        
+        return output;
     }
     
     /**

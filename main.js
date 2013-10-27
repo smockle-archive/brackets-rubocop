@@ -57,14 +57,14 @@ define (function (require, exports, module) {
         // Helper function that runs the simple.getMemory command and
         // logs the result to the console
         function lint() {
-            var memoryPromise = nodeConnection.domains.rubocop.lint();
-            memoryPromise.fail(function (err) {
+            var resultsPromise = nodeConnection.domains.rubocop.lint();
+            resultsPromise.fail(function (err) {
                 console.error("[brackets-rubocop] failed to run rubocop.lint", err);
             });
-            memoryPromise.done(function (results) {
+            resultsPromise.done(function (results) {
                 console.log("[brackets-rubocop] Success" + results);
             });
-            return memoryPromise;
+            return resultsPromise;
         }
       
         CodeInspection.register("ruby", {
