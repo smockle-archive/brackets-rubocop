@@ -21,7 +21,7 @@ maxerr: 50, node: true */
             error = "",
             output = "foo";
       
-        proc = spawn("ls");
+        proc = spawn("ls", ['-h']);
 //        
 //        proc.stdout.on("data", function (data) {
 //            output += data;
