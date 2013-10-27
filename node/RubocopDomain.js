@@ -21,7 +21,7 @@ maxerr: 50, node: true */
             error = "",
             output = "foo";
       
-        proc = spawn("ls", ['-h']);
+        proc = spawn("rubocop", ['-h']);
 //        
 //        proc.stdout.on("data", function (data) {
 //            output += data;
