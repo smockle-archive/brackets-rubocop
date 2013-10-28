@@ -2,7 +2,7 @@
 maxerr: 50, browser: true */
 /*global $, define, brackets */
 
-define (function (require, exports, module) {
+define(function (require, exports, module) {
     "use strict";
     
     var AppInit = brackets.getModule("utils/AppInit"),
@@ -56,7 +56,7 @@ define (function (require, exports, module) {
         
         // Helper function that runs the simple.getMemory command and
         // logs the result to the console
-        function lint() {
+        function logResults() {
             var resultsPromise = nodeConnection.domains.rubocop.lint();
             resultsPromise.fail(function (err) {
                 console.error("[brackets-rubocop] failed to run rubocop.lint", err);
@@ -66,10 +66,14 @@ define (function (require, exports, module) {
             });
             return resultsPromise;
         }
+        
+        function lint() {
+            chain(connect, loadSimpleDomain, logResults);
+        }
       
         CodeInspection.register("ruby", {
             name: "Rubocop",
-            scanFile: chain(connect, loadSimpleDomain, lint)
+            scanFile: lint
         });
     });
 });
