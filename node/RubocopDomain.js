@@ -15,7 +15,7 @@ maxerr: 50, node: true */
      * Handler function for the rubocop.lint command.
      * @return
      */
-    function lint() {
+    function lint(currentPath) {
         var proc,
             command = "rubocop",
             error = "",
@@ -36,9 +36,8 @@ maxerr: 50, node: true */
         
         proc.on("close", function (code) {
             output += "\n" + command + " completed with exit code " + code;
+            return output;
         });
-        
-        return output;
     }
     
     /**

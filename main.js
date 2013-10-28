@@ -58,7 +58,9 @@ define(function (require, exports, module) {
         // Helper function that runs the rubocop.lint command and
         // logs the result to the console
         function logResults() {
-            var resultsPromise = nodeConnection.domains.rubocop.lint();
+            var currentDoc = DocumentManager.getCurrentDocument(),
+                currentPath = currentDoc.file.fullPath;
+            var resultsPromise = nodeConnection.domains.rubocop.lint(currentPath);
             resultsPromise.fail(function (err) {
                 console.error("[brackets-rubocop] failed to run rubocop.lint", err);
             });
@@ -69,9 +71,7 @@ define(function (require, exports, module) {
         }
         
         function lint() {
-            var currentDoc = DocumentManager.getCurrentDocument();
-            console.log(currentDoc.file.fullPath);
-            // chain(connect, loadSimpleDomain, logResults);
+            chain(connect, loadSimpleDomain, logResults);
         }
       
         CodeInspection.register("ruby", {
