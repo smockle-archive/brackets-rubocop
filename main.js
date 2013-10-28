@@ -54,15 +54,16 @@ define(function (require, exports, module) {
             return loadPromise;
         }
         
-        // Helper function that runs the simple.getMemory command and
+        // Helper function that runs the rubocop.lint command and
         // logs the result to the console
         function logResults() {
             var resultsPromise = nodeConnection.domains.rubocop.lint();
             resultsPromise.fail(function (err) {
                 console.error("[brackets-rubocop] failed to run rubocop.lint", err);
             });
-            resultsPromise.done(function (results) {
-                console.log("[brackets-rubocop] Success" + results);
+            resultsPromise.done(function (memory) {
+                console.log("[brackets-rubocop] Success");
+                console.log(memory);
             });
             return resultsPromise;
         }
