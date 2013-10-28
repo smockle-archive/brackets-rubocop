@@ -15,9 +15,15 @@ maxerr: 50, node: true */
             command = "rubocop",
             error = "",
             output = "",
-            environment = process.env;
+            environment = process.env,
+            ruby = "ruby-2.0.0-p247";
         
-        environment.PATH = "/Users/clay/.rvm/gems/ruby-2.0.0-p247/bin:/Users/clay/.rvm/gems/ruby-2.0.0-p247@global/bin:/Users/clay/.rvm/rubies/ruby-2.0.0-p247/bin:/Users/clay/.rvm/bin:/Applications/Postgres.app/Contents/MacOS/bin:/usr/local/heroku/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/local/bin";
+        environment.PATH =
+            environment.HOME + "/.rvm/gems/" + ruby + "/bin:" +
+            environment.HOME + "/.rvm/gems/" + ruby + "@global/bin:" +
+            environment.HOME + "/.rvm/rubies/" + ruby + "/bin:" + 
+            environment.HOME + "/.rvm/bin:" +
+            "/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/local/bin";
       
         proc = spawn(command, [currentPath, "--format", "json"], { env: environment });
         

@@ -98,14 +98,12 @@ define(function (require, exports, module) {
         }
         
         function lintRuby() {
-//            console.log(g_lints);
             if (g_lints === undefined && !g_inprogress) {
                 Async.chain([connect, loadSimpleDomain, getResults]);
                 return null;
             } else if (g_checked !== undefined && !g_inprogress) {
                 window.g_checked = g_checked;
                 g_lints = undefined;
-                Async.chain([connect, loadSimpleDomain, getResults]);
                 return g_checked;
             } else {
                 return null;
