@@ -1,27 +1,24 @@
-/*jslint vars: true, plusplus: true, devel: true, nomen: true, indent: 4,
-maxerr: 50, node: true */
-/*global */
+/*jshint bitwise: true, curly: true, eqeqeq: true, forin: true, immed: true, indent: 4, latedef: true, newcap: true, noarg: true, noempty: true, nonew: true, quotmark: double, undef: true, unused: vars, strict: true, trailing: true, maxdepth: 3, browser: true */
+/*global require, process, exports */
 
 (function () {
     "use strict";
     
     var childProcess = require("child_process"),
-        spawn = childProcess.spawn;
-    
-    var DOMAIN = "rubocop";
+        spawn = childProcess.spawn,
+        DOMAIN = "rubocop",
+        RUBY = "ruby-2.0.0-p247";
     
     function _lint(currentPath, callback) {
         var proc,
             command = "rubocop",
-            error = "",
             output = "",
-            environment = process.env,
-            ruby = "ruby-2.0.0-p247";
+            environment = process.env;
         
         environment.PATH =
-            environment.HOME + "/.rvm/gems/" + ruby + "/bin:" +
-            environment.HOME + "/.rvm/gems/" + ruby + "@global/bin:" +
-            environment.HOME + "/.rvm/rubies/" + ruby + "/bin:" + 
+            environment.HOME + "/.rvm/gems/" + RUBY + "/bin:" +
+            environment.HOME + "/.rvm/gems/" + RUBY + "@global/bin:" +
+            environment.HOME + "/.rvm/rubies/" + RUBY + "/bin:" +
             environment.HOME + "/.rvm/bin:" +
             "/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/local/bin";
       
@@ -36,7 +33,6 @@ maxerr: 50, node: true */
         });
         
         proc.on("close", function (code) {
-            console.log("[brackets-rubocop] Closing");
             proc.kill();
             callback(undefined, output);
             return;
@@ -63,5 +59,4 @@ maxerr: 50, node: true */
     }
     
     exports.init = init;
-    
 }());
