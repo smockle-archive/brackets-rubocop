@@ -10,20 +10,8 @@ define(function (require, exports, module) {
         DocumentManager = brackets.getModule("document/DocumentManager"),
         ProjectManager = brackets.getModule("project/ProjectManager"),
         ExtensionUtils = brackets.getModule("utils/ExtensionUtils"),
-        NodeConnection = brackets.getModule("utils/NodeConnection");
-    
-    // Helper function that chains a series of promise-returning
-    // functions together via their done callbacks.
-    function chain() {
-        var functions = Array.prototype.slice.call(arguments, 0);
-        if (functions.length > 0) {
-            var firstFunction = functions.shift();
-            var firstPromise = firstFunction.call();
-            firstPromise.done(function () {
-                chain.apply(null, functions);
-            });
-        }
-    }
+        NodeConnection = brackets.getModule("utils/NodeConnection"),
+        Async = brackets.getModule("utils/Async");
     
     AppInit.appReady(function () {
         // Create a new node connection. Requires the following extension:
@@ -65,7 +53,7 @@ define(function (require, exports, module) {
             });
             resultsPromise.done(function (lints) {
                 console.log("[brackets-rubocop] Done");
-                checkResults(lints);
+                return checkResults(lints);
             });
             return resultsPromise;
         }
@@ -101,14 +89,10 @@ define(function (require, exports, module) {
                 return result;
             }
         }
-        
-        function lint() {
-            chain(connect, loadSimpleDomain, getResults);
-        }
       
         CodeInspection.register("ruby", {
             name: "Rubocop",
-            scanFile: lint
+            scanFile: function () { Async.chain([connect, loadSimpleDomain, getResults]); }
         });
     });
 });
