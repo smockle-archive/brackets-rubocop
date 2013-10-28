@@ -64,8 +64,35 @@ define(function (require, exports, module) {
             resultsPromise.fail(function (err) {
                 console.error("[brackets-rubocop] failed to run rubocop.lint", err);
             });
-            resultsPromise.done(function () {
+            resultsPromise.done(function (lints) {
                 console.log("[brackets-rubocop] Success");
+                if (lints.summary.offence_count === 0) {
+                    return null;
+                } else {
+                    var offenses = lints.files[0].offences;
+                    var result = { errors: [] };
+                    for (var i = 0, len = offenses.length; i < len; i++) {
+                        var messageOb = offenses[i];
+                        //encountered an issue when jshint returned a null err
+                        if (!messageOb) continue;
+                        //default
+                        var type = CodeInspection.Type.ERROR;
+        
+                        if ("severity" in messageOb) {
+                            if (messageOb.severity === "convention") {
+                                type = CodeInspection.Type.WARNING;
+                            }
+                        }
+        
+                        result.errors.push({
+                            pos: { line: messageOb.location.line, ch: messageOb.location.column },
+                            message: messageOb.message,
+                            type: type
+                        });
+                    }
+                    console.log(result);
+                    return result;
+                }
             });
             return resultsPromise;
         }

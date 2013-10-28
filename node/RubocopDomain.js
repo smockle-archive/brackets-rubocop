@@ -19,9 +19,14 @@ maxerr: 50, node: true */
         var proc,
             command = "rubocop",
             error = "",
-            output = "";
+            output = "",
+            environment = process.env;
+        
+        environment.PATH = "/Users/clay/.rvm/gems/ruby-2.0.0-p247/bin:/Users/clay/.rvm/gems/ruby-2.0.0-p247@global/bin:/Users/clay/.rvm/rubies/ruby-2.0.0-p247/bin:/Users/clay/.rvm/bin:/Applications/Postgres.app/Contents/MacOS/bin:/usr/local/heroku/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/local/bin";
       
-        proc = spawn("ls", [currentPath]);
+        proc = spawn(command, [currentPath, "--format", "json"], { env: environment });
+        //proc = spawn("ruby", ['-v'], { env: environment });
+        //proc = spawn("gem", ['list'], { env: environment });
         
         proc.stdout.on("data", function (data) {
             output += data;
@@ -34,8 +39,9 @@ maxerr: 50, node: true */
         });
         
         proc.on("close", function (code) {
-            console.log("[brackets-rubocop] Debug: " + output);
-            output += "\n" + command + " completed with exit code " + code;
+//            console.log(process.env);
+//            console.log("[brackets-rubocop] Debug: " + output);
+//            output += "\n" + command + " completed with exit code " + code;
             return output;
         });
     }
