@@ -21,10 +21,9 @@ maxerr: 50, node: true */
             error = "",
             output = "";
       
-        proc = spawn("ls", ['-a']);
+        proc = spawn("ls", [currentPath]);
         
         proc.stdout.on("data", function (data) {
-            console.log("[brackets-rubocop] Debug: " + data);
             output += data;
         });
         
@@ -36,6 +35,7 @@ maxerr: 50, node: true */
         
         proc.on("close", function (code) {
             output += "\n" + command + " completed with exit code " + code;
+            console.log("[brackets-rubocop] Debug: " + output);            
             return output;
         });
     }

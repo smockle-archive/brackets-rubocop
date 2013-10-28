@@ -64,8 +64,8 @@ define(function (require, exports, module) {
             resultsPromise.fail(function (err) {
                 console.error("[brackets-rubocop] failed to run rubocop.lint", err);
             });
-            resultsPromise.done(function (results) {
-                console.log("[brackets-rubocop] Success: " + results);
+            resultsPromise.done(function () {
+                console.log("[brackets-rubocop] Success");
             });
             return resultsPromise;
         }
