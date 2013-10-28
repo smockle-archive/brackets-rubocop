@@ -21,7 +21,7 @@ maxerr: 50, node: true */
             error = "",
             output = "";
       
-        proc = spawn("echo", ['$PATH']);
+        proc = spawn("ls", [currentPath]);
         
         proc.stdout.on("data", function (data) {
             output += data;
