@@ -67,13 +67,13 @@ define(function (require, exports, module) {
             return resultsPromise;
         }
         
-        function lint() {
+        function lintFile() {
             chain(connect, loadSimpleDomain, logResults);
         }
       
         CodeInspection.register("ruby", {
             name: "Rubocop",
-            scanFile: lint
+            scanFile: lintFile
         });
     });
 });
