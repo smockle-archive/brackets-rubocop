@@ -23,7 +23,7 @@ define (function (require, exports, module) {
             });
         }
     }
-  
+    
     AppInit.appReady(function () {
         // Create a new node connection. Requires the following extension:
         // https://github.com/joelrbrandt/brackets-node-client
