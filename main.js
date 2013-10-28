@@ -7,6 +7,7 @@ define(function (require, exports, module) {
     
     var AppInit = brackets.getModule("utils/AppInit"),
         CodeInspection = brackets.getModule("language/CodeInspection"),
+        DocumentManager = brackets.getModule("document/DocumentManager"),
         ProjectManager = brackets.getModule("project/ProjectManager"),
         ExtensionUtils = brackets.getModule("utils/ExtensionUtils"),
         NodeConnection = brackets.getModule("utils/NodeConnection");
@@ -68,7 +69,9 @@ define(function (require, exports, module) {
         }
         
         function lint() {
-            chain(connect, loadSimpleDomain, logResults);
+            var currentDoc = DocumentManager.getCurrentDocument();
+            console.log(currentDoc.file.fullPath);
+            // chain(connect, loadSimpleDomain, logResults);
         }
       
         CodeInspection.register("ruby", {
