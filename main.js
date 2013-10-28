@@ -13,6 +13,10 @@ define(function (require, exports, module) {
         NodeConnection = brackets.getModule("utils/NodeConnection"),
         Async = brackets.getModule("utils/Async");
     
+    var g_lints;
+    var g_inprogress = false;
+    var g_checked;
+    
     AppInit.appReady(function () {
         // Create a new node connection. Requires the following extension:
         // https://github.com/joelrbrandt/brackets-node-client
@@ -26,6 +30,7 @@ define(function (require, exports, module) {
         
         // Helper function to connect to node
         function connect() {
+            g_inprogress = true;
             var connectionPromise = nodeConnection.connect(true);
             connectionPromise.fail(function () {
                 console.error("[brackets-rubocop] failed to connect to node");
@@ -53,7 +58,10 @@ define(function (require, exports, module) {
             });
             resultsPromise.done(function (lints) {
                 console.log("[brackets-rubocop] Done");
-                return checkResults(lints);
+                g_lints = lints;
+                g_checked = checkResults(lints);
+                g_inprogress = false;
+                CodeInspection.toggleEnabled(true);
             });
             return resultsPromise;
         }
@@ -80,19 +88,31 @@ define(function (require, exports, module) {
                     }
             
                     result.errors.push({
-                        pos: { line: messageOb.location.line, ch: messageOb.location.column },
+                        pos: { line: messageOb.location.line - 1, ch: messageOb.location.column },
                         message: messageOb.message,
                         type: type
                     });
                 }
-                console.log(result);
                 return result;
+            }
+        }
+        
+        function lintRuby() {
+//            console.log(g_lints);
+            if (g_lints === undefined && !g_inprogress) {
+                Async.chain([connect, loadSimpleDomain, getResults]);
+                return null;
+            } else if (g_checked !== undefined && !g_inprogress) {
+                window.g_checked = g_checked;
+                return g_checked;
+            } else {
+                return null;
             }
         }
       
         CodeInspection.register("ruby", {
             name: "Rubocop",
-            scanFile: function () { Async.chain([connect, loadSimpleDomain, getResults]); }
+            scanFile: lintRuby
         });
     });
 });
