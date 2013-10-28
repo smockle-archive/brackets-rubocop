@@ -10,12 +10,7 @@ maxerr: 50, node: true */
     
     var DOMAIN = "rubocop";
     
-    /**
-     * @private
-     * Handler function for the rubocop.lint command.
-     * @return
-     */
-    function lint(currentPath) {
+    function _lint(currentPath, callback) {
         var proc,
             command = "rubocop",
             error = "",
@@ -25,24 +20,20 @@ maxerr: 50, node: true */
         environment.PATH = "/Users/clay/.rvm/gems/ruby-2.0.0-p247/bin:/Users/clay/.rvm/gems/ruby-2.0.0-p247@global/bin:/Users/clay/.rvm/rubies/ruby-2.0.0-p247/bin:/Users/clay/.rvm/bin:/Applications/Postgres.app/Contents/MacOS/bin:/usr/local/heroku/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/local/bin";
       
         proc = spawn(command, [currentPath, "--format", "json"], { env: environment });
-        //proc = spawn("ruby", ['-v'], { env: environment });
-        //proc = spawn("gem", ['list'], { env: environment });
         
         proc.stdout.on("data", function (data) {
             output += data;
         });
         
-        // append errors to output instead, so that we get all of the content back in
-        // the output field in the UI.  We don't really need to distinguish.
         proc.stderr.on("data", function (err) {
             output += err;
         });
         
         proc.on("close", function (code) {
-//            console.log(process.env);
-//            console.log("[brackets-rubocop] Debug: " + output);
-//            output += "\n" + command + " completed with exit code " + code;
-            return output;
+            console.log("[brackets-rubocop] Closing");
+            proc.kill();
+            callback(undefined, output);
+            return;
         });
     }
     
@@ -57,8 +48,8 @@ maxerr: 50, node: true */
         DomainManager.registerCommand(
             DOMAIN,     // domain name
             "lint",     // command name
-            lint,       // command handler function
-            false,      // this command is synchronous
+            _lint,       // command handler function
+            true,       // this command is synchronous
             "Lints the current file with Rubocop.",
             [],         // no parameters
             []

@@ -55,9 +55,8 @@ define(function (require, exports, module) {
             return loadPromise;
         }
         
-        // Helper function that runs the rubocop.lint command and
-        // logs the result to the console
-        function logResults() {
+        // Helper function that runs the rubocop.lint command
+        function getResults() {
             var currentDoc = DocumentManager.getCurrentDocument(),
                 currentPath = currentDoc.file.fullPath;
             var resultsPromise = nodeConnection.domains.rubocop.lint(currentPath);
@@ -65,40 +64,46 @@ define(function (require, exports, module) {
                 console.error("[brackets-rubocop] failed to run rubocop.lint", err);
             });
             resultsPromise.done(function (lints) {
-                console.log("[brackets-rubocop] Success");
-                if (lints.summary.offence_count === 0) {
-                    return null;
-                } else {
-                    var offenses = lints.files[0].offences;
-                    var result = { errors: [] };
-                    for (var i = 0, len = offenses.length; i < len; i++) {
-                        var messageOb = offenses[i];
-                        //encountered an issue when jshint returned a null err
-                        if (!messageOb) continue;
-                        //default
-                        var type = CodeInspection.Type.ERROR;
-        
-                        if ("severity" in messageOb) {
-                            if (messageOb.severity === "convention") {
-                                type = CodeInspection.Type.WARNING;
-                            }
-                        }
-        
-                        result.errors.push({
-                            pos: { line: messageOb.location.line, ch: messageOb.location.column },
-                            message: messageOb.message,
-                            type: type
-                        });
-                    }
-                    console.log(result);
-                    return result;
-                }
+                console.log("[brackets-rubocop] Done");
+                checkResults(lints);
             });
             return resultsPromise;
         }
         
+        function checkResults(lints) {
+            console.log("[brackets-rubocop] Linting");
+            lints = JSON.parse(lints);
+            if (lints.summary.offence_count === 0) {
+                return null;
+            } else {
+                var offenses = lints.files[0].offences;
+                var result = { errors: [] };
+                for (var i = 0, len = offenses.length; i < len; i++) {
+                    var messageOb = offenses[i];
+                    //encountered an issue when jshint returned a null err
+                    if (!messageOb) continue;
+                    //default
+                    var type = CodeInspection.Type.ERROR;
+            
+                    if ("severity" in messageOb) {
+                        if (messageOb.severity === "convention") {
+                            type = CodeInspection.Type.WARNING;
+                        }
+                    }
+            
+                    result.errors.push({
+                        pos: { line: messageOb.location.line, ch: messageOb.location.column },
+                        message: messageOb.message,
+                        type: type
+                    });
+                }
+                console.log(result);
+                return result;
+            }
+        }
+        
         function lint() {
-            chain(connect, loadSimpleDomain, logResults);
+            chain(connect, loadSimpleDomain, getResults);
         }
       
         CodeInspection.register("ruby", {
