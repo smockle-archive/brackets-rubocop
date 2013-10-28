@@ -61,20 +61,19 @@ define(function (require, exports, module) {
             resultsPromise.fail(function (err) {
                 console.error("[brackets-rubocop] failed to run rubocop.lint", err);
             });
-            resultsPromise.done(function (memory) {
-                console.log("[brackets-rubocop] Success");
-                console.log(memory);
+            resultsPromise.done(function (results) {
+                console.log("[brackets-rubocop] Success: " + results);
             });
             return resultsPromise;
         }
         
-        function lintFile() {
+        function lint() {
             chain(connect, loadSimpleDomain, logResults);
         }
       
         CodeInspection.register("ruby", {
             name: "Rubocop",
-            scanFile: lintFile
+            scanFile: lint
         });
     });
 });
