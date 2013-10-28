@@ -24,6 +24,7 @@ maxerr: 50, node: true */
         proc = spawn("ls", ['-a']);
         
         proc.stdout.on("data", function (data) {
+            console.log("[brackets-rubocop] Debug");
             output += data;
         });
         
