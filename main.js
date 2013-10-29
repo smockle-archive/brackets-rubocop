@@ -29,7 +29,7 @@ define(function (require, exports, module) {
         }
         
         function loadSimpleDomain() {
-            var path = ExtensionUtils.getModulePath(module, "node/RubocopDomain"),
+            var path = ExtensionUtils.getModulePath(module, "node/RuboCopDomain"),
                 loadPromise = nodeConnection.loadDomains([path], true);
             
             loadPromise.fail(function () {
@@ -110,7 +110,7 @@ define(function (require, exports, module) {
         }
       
         CodeInspection.register("ruby", {
-            name: "Rubocop",
+            name: "RuboCop",
             scanFile: lintRuby
         });
     });

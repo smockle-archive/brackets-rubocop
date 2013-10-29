@@ -1,9 +1,9 @@
 {
     "name": "smockle.rubocop",
-    "title": "Rubocop",
-    "description": "Adds Rubocop support to Brackets.",
+    "title": "RuboCop",
+    "description": "Adds RuboCop support to Brackets.",
     "homepage": "https://github.com/smockle/brackets-rubocop",
-    "version": "0.3.0",
+    "version": "0.4.0",
     "author": "Clay Miller <clay@smockle.com> (http://www.smockle.com)",
     "license": "MIT",
     "keywords": [

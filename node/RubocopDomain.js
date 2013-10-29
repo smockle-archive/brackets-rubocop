@@ -52,7 +52,7 @@
             "lint",     // command name
             _lint,       // command handler function
             true,       // this command is synchronous
-            "Lints the current file with Rubocop.",
+            "Lints the current file with RuboCop.",
             [],         // no parameters
             []
         );
