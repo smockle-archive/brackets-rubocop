@@ -1,11 +1,14 @@
 {
     "name": "smockle.rubocop",
     "title": "Rubocop",
-    "description": "Adds Rubocop (Ruby code linter) support to Brackets.",
+    "description": "Adds Rubocop support to Brackets.",
     "homepage": "https://github.com/smockle/brackets-rubocop",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "author": "Clay Miller <clay@smockle.com> (http://www.smockle.com)",
     "license": "MIT",
+    "keywords": [
+        "ruby", "linter"
+    ],
     "engines": {
         "brackets": ">=0.24.0"
     }
