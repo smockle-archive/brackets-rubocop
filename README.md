@@ -1,7 +1,7 @@
 brackets-rubocop
 ===
 
-Adds Rubocop support to Brackets.
+Adds Rubocop support to Brackets. Uses the [new Brackets linting API](http://blog.brackets.io/2013/10/07/new-linting-api/).
 
 Usage
 ===
